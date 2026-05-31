@@ -1,0 +1,42 @@
+:root{
+  --brightPrimary: #fff;
+  --brightSecondary: #000;
+  --darkPrimary: #224;
+  --darkSecondary: #fff;
+  --darkTertiary: #335
+}
+
+html {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+body{
+  background-color: var(--darkPrimary);
+  color: var(--darkSecondary);
+}
+
+#app{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
+
+.widgetContainer{
+  display: flex;
+  border: 1px var(--darkTertiary) solid;
+  border-radius: 1rem;
+  width: 10rem;
+  height: 10rem;
+  margin: .5rem;
+  padding: 1rem;
+  justify-content: center;
+  align-items: center;
+  box-shadow: #000 1px 1px 6px;
+}
+
+.widget{
+
+}
