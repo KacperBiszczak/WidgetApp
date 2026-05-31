@@ -1,5 +1,7 @@
 import type { DashboardWidgetConfig } from "./DashboardWidgetConfigInterface";
+import { widgetType } from "./DashboardWidgetConfigInterface";
 import type { DashboardWidgetInterface } from "./DashboardWidgetInterface";
+import { DigitalClock } from "./DigitalClockWidget";
 
 export class DashboardWidget implements DashboardWidgetInterface<DashboardWidgetConfig> {
     #rootEl: HTMLElement | undefined;
@@ -7,6 +9,7 @@ export class DashboardWidget implements DashboardWidgetInterface<DashboardWidget
     
     private config: DashboardWidgetConfig;
     private target: HTMLElement | null = null;
+    private clock: DigitalClock | undefined;
 
     constructor(initialConfig?: DashboardWidgetConfig) {
         this.config = initialConfig || {} as DashboardWidgetConfig;
@@ -23,7 +26,39 @@ export class DashboardWidget implements DashboardWidgetInterface<DashboardWidget
         // Tu będziemy dodawać konkretne widgety, tymczasowo jest wstawiony zwykły tekst
         this.#widgetEl = document.createElement("span");
         this.#widgetEl.classList.add("widget");
-        this.#widgetEl.innerHTML = "Tutaj będzie widget"
+
+        switch(this.config.type){
+            case widgetType.digitalClockWidget:{ 
+                    const clockEl = document.createElement("div");
+                    clockEl.classList.add("clockContainer");
+                    this.#widgetEl.appendChild(clockEl);
+
+                    this.clock = new DigitalClock();
+                    this.clock.mount(clockEl);
+
+                break;
+            }
+
+            case widgetType.newsWidget:{
+                this.#widgetEl.innerHTML = "News";
+                break;
+            }
+
+            case widgetType.quoteWidget:{
+                this.#widgetEl.innerHTML = "Quote";
+                break;
+            }
+
+            case widgetType.whetherWidget:{
+                this.#widgetEl.innerHTML = "Whether";
+                break;
+            }
+
+            default:{
+                this.#widgetEl.innerHTML = "Błędny typ widgeta";
+                break;
+            }
+        }
 
         this.#rootEl.appendChild(this.#widgetEl);
 
@@ -31,10 +66,10 @@ export class DashboardWidget implements DashboardWidgetInterface<DashboardWidget
     };
 
     unmount = async (): Promise<void> => {
-        if (this.target) {
-            this.target.innerHTML = '';
-            this.target = null;
-        }
+        // if (this.target) {
+        //     this.target.innerHTML = '';
+        //     this.target = null;
+        // }
     };
 
     invalidate = async (): Promise<void> => {
