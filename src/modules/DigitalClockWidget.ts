@@ -18,10 +18,10 @@ export class DigitalClock {
             this.intervalId = null;
         }
 
-        if (this.targetElement) {
-            this.targetElement.innerHTML = '';
-            this.targetElement = null;
-        }
+        // if (this.targetElement) {
+        //     this.targetElement.innerHTML = '';
+        //     this.targetElement = null;
+        // }
     };
 
     private updateTimeDisplay = (): void => {

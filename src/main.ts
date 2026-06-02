@@ -4,23 +4,30 @@ import './style.css'
 
 const app = document.querySelector<HTMLDivElement>('#app');
 
-const simpleWidget = new DashboardWidget();
+// const simpleWidget = new DashboardWidget();
 
 if(app){
-simpleWidget.mount(app, {title: "Testowy widget", refreshInterval: 1000,type: widgetType.digitalClockWidget})
-simpleWidget.mount(app, {title: "Testowy widget", refreshInterval: 1000,type: widgetType.digitalClockWidget})
-simpleWidget.mount(app, {title: "Testowy widget", refreshInterval: 1000,type: widgetType.digitalClockWidget})
-simpleWidget.mount(app, {title: "Testowy widget", refreshInterval: 1000,type: widgetType.digitalClockWidget})
-simpleWidget.mount(app, {title: "Testowy widget", refreshInterval: 1000,type: widgetType.digitalClockWidget})
-simpleWidget.mount(app, {title: "Testowy widget", refreshInterval: 1000,type: widgetType.digitalClockWidget})
-simpleWidget.mount(app, {title: "Testowy widget", refreshInterval: 1000})
-simpleWidget.mount(app, {title: "Testowy widget", refreshInterval: 1000})
+new DashboardWidget().mount(app, {title: "Testowy widget", refreshInterval: 1000,type: widgetType.digitalClockWidget})
+new DashboardWidget().mount(app, {title: "Testowy widget", refreshInterval: 1000,type: widgetType.digitalClockWidget})
+new DashboardWidget().mount(app, {title: "Testowy widget", refreshInterval: 1000,type: widgetType.digitalClockWidget})
+new DashboardWidget().mount(app, {title: "Testowy widget", refreshInterval: 1000})
+new DashboardWidget().mount(app, {title: "Testowy widget", refreshInterval: 1000})
+new DashboardWidget().mount(app, {title: "Testowy widget", refreshInterval: 1000})
+
 }
 
-app?.addEventListener('click', () =>{
-    simpleWidget.unmount();
-})
+// area 51
 
+const input1 = document.createElement("input");
+input1.type = "button";
+input1.value = "KLIKNIJ MNIE (ADD_TEST)"
+if(app){
+    input1.addEventListener("click", () => {
+        const newWidget = new DashboardWidget().mount(app, {title: "Testowy widget", refreshInterval: 1000})
+    }
+)}
+
+app?.appendChild(input1);
 
 // TO DO:
 // Widgety:

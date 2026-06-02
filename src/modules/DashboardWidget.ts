@@ -7,11 +7,13 @@ export class DashboardWidget implements DashboardWidgetInterface<DashboardWidget
     #rootEl: HTMLElement | undefined;
     #widgetEl: HTMLElement | undefined;
     
+    private id : String;
     private config: DashboardWidgetConfig;
     private target: HTMLElement | null = null;
     private clock: DigitalClock | undefined;
 
     constructor(initialConfig?: DashboardWidgetConfig) {
+        this.id = Math.floor(Math.random() * Date.now()).toString(16);
         this.config = initialConfig || {} as DashboardWidgetConfig;
     }
 
@@ -23,9 +25,14 @@ export class DashboardWidget implements DashboardWidgetInterface<DashboardWidget
         this.#rootEl.classList.add("widgetContainer");
         target.appendChild(this.#rootEl);
 
+        this.#rootEl.addEventListener("click", () => {
+            this.unmount();
+        })
+
         // Tu będziemy dodawać konkretne widgety, tymczasowo jest wstawiony zwykły tekst
         this.#widgetEl = document.createElement("span");
         this.#widgetEl.classList.add("widget");
+        this.#widgetEl.id = this.id.toString();
 
         switch(this.config.type){
             case widgetType.digitalClockWidget:{ 
@@ -55,7 +62,7 @@ export class DashboardWidget implements DashboardWidgetInterface<DashboardWidget
             }
 
             default:{
-                this.#widgetEl.innerHTML = "Błędny typ widgeta";
+                this.#widgetEl.innerHTML = `Błędny typ widgeta ${this.id}`;
                 break;
             }
         }
@@ -66,10 +73,7 @@ export class DashboardWidget implements DashboardWidgetInterface<DashboardWidget
     };
 
     unmount = async (): Promise<void> => {
-        // if (this.target) {
-        //     this.target.innerHTML = '';
-        //     this.target = null;
-        // }
+        console.log(`Usuwanie widgetu o ID: ${this.id}...`);
     };
 
     invalidate = async (): Promise<void> => {
