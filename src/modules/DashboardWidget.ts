@@ -1,7 +1,8 @@
 import type { DashboardWidgetConfig } from "./DashboardWidgetConfigInterface";
 import { widgetType } from "./DashboardWidgetConfigInterface";
 import type { DashboardWidgetInterface } from "./DashboardWidgetInterface";
-import { DigitalClock } from "./DigitalClockWidget";
+import { DigitalClockWidget } from "./DigitalClockWidget";
+import { WhetherWidget } from "./WhetherWidget";
 
 export class DashboardWidget implements DashboardWidgetInterface<DashboardWidgetConfig> {
     #rootEl: HTMLElement | undefined;
@@ -10,7 +11,7 @@ export class DashboardWidget implements DashboardWidgetInterface<DashboardWidget
     private id : String;
     private config: DashboardWidgetConfig;
     private target: HTMLElement | null = null;
-    private clock: DigitalClock | undefined;
+    private clock: DigitalClockWidget | undefined;
 
     constructor(initialConfig?: DashboardWidgetConfig) {
         this.id = Math.floor(Math.random() * Date.now()).toString(16);
@@ -36,13 +37,8 @@ export class DashboardWidget implements DashboardWidgetInterface<DashboardWidget
 
         switch(this.config.type){
             case widgetType.digitalClockWidget:{ 
-                    const clockEl = document.createElement("div");
-                    clockEl.classList.add("clockContainer");
-                    this.#widgetEl.appendChild(clockEl);
-
-                    this.clock = new DigitalClock();
-                    this.clock.mount(clockEl);
-
+                    const clockEl = new DigitalClockWidget(this.config);
+                    clockEl.mount(this.#widgetEl);
                 break;
             }
 
@@ -57,7 +53,8 @@ export class DashboardWidget implements DashboardWidgetInterface<DashboardWidget
             }
 
             case widgetType.whetherWidget:{
-                this.#widgetEl.innerHTML = "Whether";
+                const whether = new WhetherWidget(this.config);
+                whether.mount(this.#widgetEl);
                 break;
             }
 

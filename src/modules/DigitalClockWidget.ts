@@ -1,10 +1,21 @@
-export class DigitalClock {
+import type { DashboardWidgetConfig } from "./DashboardWidgetConfigInterface";
+
+export class DigitalClockWidget {
     private intervalId: ReturnType<typeof setInterval> | null = null;
     private targetElement: HTMLElement | null = null;
+    private config: DashboardWidgetConfig;
+
+    #digitalClockEl: HTMLElement | undefined;
+
+    constructor(initialConfig?: DashboardWidgetConfig) {
+        this.config = initialConfig || {} as DashboardWidgetConfig;
+    }
 
     mount = async (target: HTMLElement): Promise<void> => {
         this.targetElement = target;
-
+        this.#digitalClockEl = document.createElement("div");
+        this.targetElement.appendChild(this.#digitalClockEl);
+        
         this.updateTimeDisplay();
 
         this.intervalId = setInterval(() => {
@@ -25,9 +36,9 @@ export class DigitalClock {
     };
 
     private updateTimeDisplay = (): void => {
-        if (this.targetElement) {
+        if (this.#digitalClockEl) {
             const currentTime = new Date();
-            this.targetElement.innerText = currentTime.toLocaleTimeString('pl-PL');
+            this.#digitalClockEl.innerText = currentTime.toLocaleTimeString('pl-PL');
         }
     };
 }

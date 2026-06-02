@@ -18,12 +18,13 @@ new DashboardWidget().mount(app, {title: "Testowy widget", refreshInterval: 1000
 
 // area 51
 
+
 const input1 = document.createElement("input");
 input1.type = "button";
 input1.value = "KLIKNIJ MNIE (ADD_TEST)"
 if(app){
     input1.addEventListener("click", () => {
-        const newWidget = new DashboardWidget().mount(app, {title: "Testowy widget", refreshInterval: 1000})
+        const newWidget = new DashboardWidget().mount(app, {title: "Testowy widget", refreshInterval: 1000, type: widgetType.whetherWidget})
     }
 )}
 
