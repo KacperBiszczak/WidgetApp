@@ -1,17 +1,12 @@
 import type { DashboardWidgetConfig } from "./DashboardWidgetConfigInterface";
-import { widgetType } from "./DashboardWidgetConfigInterface";
 import type { DashboardWidgetInterface } from "./DashboardWidgetInterface";
-import { DigitalClockWidget } from "./DigitalClockWidget";
-import { WhetherWidget } from "./WhetherWidget";
 
-export class DashboardWidget implements DashboardWidgetInterface<DashboardWidgetConfig> {
-    #rootEl: HTMLElement | undefined;
-    #widgetEl: HTMLElement | undefined;
-    
-    private id : String;
-    private config: DashboardWidgetConfig;
-    private target: HTMLElement | null = null;
-    private clock: DigitalClockWidget | undefined;
+export abstract class DashboardWidget implements DashboardWidgetInterface<DashboardWidgetConfig> {
+    protected rootEl: HTMLElement | undefined;
+    protected widgetEl: HTMLElement | undefined;
+    protected target: HTMLElement | null = null;
+    protected config: DashboardWidgetConfig;
+    protected id: string;
 
     constructor(initialConfig?: DashboardWidgetConfig) {
         this.id = Math.floor(Math.random() * Date.now()).toString(16);
@@ -22,77 +17,63 @@ export class DashboardWidget implements DashboardWidgetInterface<DashboardWidget
         this.target = target;
         this.config = initialConfig;
 
-        this.#rootEl = document.createElement("div");
-        this.#rootEl.classList.add("widgetContainer");
-        target.appendChild(this.#rootEl);
+        this.rootEl = document.createElement("div");
+        this.rootEl.classList.add("widgetContainer");
 
-        this.#rootEl.addEventListener("click", () => {
+        this.widgetEl = document.createElement("span");
+        this.widgetEl.classList.add("widget");
+        this.widgetEl.id = this.id;
+
+        this.rootEl.appendChild(this.widgetEl);
+        target.appendChild(this.rootEl);
+
+        // Usuwanie widgetu
+        this.rootEl.addEventListener("click", () => {
             this.unmount();
-        })
+        });
 
-        // Tu będziemy dodawać konkretne widgety, tymczasowo jest wstawiony zwykły tekst
-        this.#widgetEl = document.createElement("span");
-        this.#widgetEl.classList.add("widget");
-        this.#widgetEl.id = this.id.toString();
-
-        switch(this.config.type){
-            case widgetType.digitalClockWidget:{ 
-                    const clockEl = new DigitalClockWidget(this.config);
-                    clockEl.mount(this.#widgetEl);
-                break;
-            }
-
-            case widgetType.newsWidget:{
-                this.#widgetEl.innerHTML = "News";
-                break;
-            }
-
-            case widgetType.quoteWidget:{
-                this.#widgetEl.innerHTML = "Quote";
-                break;
-            }
-
-            case widgetType.whetherWidget:{
-                const whether = new WhetherWidget(this.config);
-                whether.mount(this.#widgetEl);
-                break;
-            }
-
-            default:{
-                this.#widgetEl.innerHTML = `Błędny typ widgeta ${this.id}`;
-                break;
-            }
-        }
-
-        this.#rootEl.appendChild(this.#widgetEl);
-
-        // target.innerHTML = '<div class="dashboard-widget">Dashboard Widget</div>';
+        await this.render();
     };
 
-    unmount = async (): Promise<void> => {
+    protected abstract render(): Promise<void> | void;
+
+    async unmount(): Promise<void> {
         console.log(`Usuwanie widgetu o ID: ${this.id}...`);
+
+        if (this.rootEl) {
+            this.rootEl.remove();
+        }
+
+        this.rootEl = undefined;
+        this.widgetEl = undefined;
+        this.target = null;
     };
 
     invalidate = async (): Promise<void> => {
         if (this.target) {
+            await this.render();
             this.onConfigUpdated(this.config);
         }
     };
 
-    setConfig = (config: DashboardWidgetConfig): void => {
-        this.config = config;
-        this.onConfigUpdated(config);
+    public setConfig = (config: Partial<DashboardWidgetConfig>): void => {
+        this.config = {
+            ...this.config,
+            ...config
+        };
+        
+        this.onConfigUpdated(this.config);
     };
 
-    getConfig = (): DashboardWidgetConfig => {
+    public getConfig = (): DashboardWidgetConfig => {
         return this.config;
     };
 
     onConfigUpdated = (config: DashboardWidgetConfig): void => {
         this.config = config;
+
         if (this.target) {
-            this.target.dispatchEvent(new CustomEvent('configUpdated', { detail: config }));
+            this.target.dispatchEvent(new CustomEvent("configUpdated", { detail: config }));
         }
     };
-
 }

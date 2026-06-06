@@ -1,44 +1,44 @@
 import type { DashboardWidgetConfig } from "./DashboardWidgetConfigInterface";
+import { DashboardWidget } from "./DashboardWidget";
 
-export class DigitalClockWidget {
+export class DigitalClockWidget extends DashboardWidget {
     private intervalId: ReturnType<typeof setInterval> | null = null;
-    private targetElement: HTMLElement | null = null;
-    private config: DashboardWidgetConfig;
-
+    
     #digitalClockEl: HTMLElement | undefined;
-
+    
     constructor(initialConfig?: DashboardWidgetConfig) {
-        this.config = initialConfig || {} as DashboardWidgetConfig;
+        super(initialConfig);
     }
+    
+    #refreshInterval = this.config.refreshInterval;
 
-    mount = async (target: HTMLElement): Promise<void> => {
-        this.targetElement = target;
+    protected render = (): void => {
+        if (!this.widgetEl) return;
+
         this.#digitalClockEl = document.createElement("div");
-        this.targetElement.appendChild(this.#digitalClockEl);
-        
+        this.widgetEl.appendChild(this.#digitalClockEl);
+
         this.updateTimeDisplay();
 
         this.intervalId = setInterval(() => {
             this.updateTimeDisplay();
-        }, 1000);
+        }, this.#refreshInterval);
     };
 
-    unmount = async (): Promise<void> => {
+    override unmount = async (): Promise<void> => {
         if (this.intervalId) {
             clearInterval(this.intervalId);
             this.intervalId = null;
         }
 
-        // if (this.targetElement) {
-        //     this.targetElement.innerHTML = '';
-        //     this.targetElement = null;
-        // }
+        await super.unmount();
     };
 
     private updateTimeDisplay = (): void => {
         if (this.#digitalClockEl) {
-            const currentTime = new Date();
-            this.#digitalClockEl.innerText = currentTime.toLocaleTimeString('pl-PL');
+            this.#digitalClockEl.innerText =
+                // W przyszłości tutaj zmiana formatu hh:mm / hh:mm:ss
+                new Date().toLocaleTimeString("pl-PL");
         }
     };
 }

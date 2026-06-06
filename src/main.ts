@@ -1,38 +1,34 @@
-import { DashboardWidget } from './modules/DashboardWidget'
-import { widgetType } from './modules/DashboardWidgetConfigInterface';
+import { DigitalClockWidget } from './modules/DigitalClockWidget';
 import './style.css'
 
 const app = document.querySelector<HTMLDivElement>('#app');
 
-// const simpleWidget = new DashboardWidget();
-
 if(app){
-new DashboardWidget().mount(app, {title: "Testowy widget", refreshInterval: 1000,type: widgetType.digitalClockWidget})
-new DashboardWidget().mount(app, {title: "Testowy widget", refreshInterval: 1000,type: widgetType.digitalClockWidget})
-new DashboardWidget().mount(app, {title: "Testowy widget", refreshInterval: 1000,type: widgetType.digitalClockWidget})
-new DashboardWidget().mount(app, {title: "Testowy widget", refreshInterval: 1000})
-new DashboardWidget().mount(app, {title: "Testowy widget", refreshInterval: 1000})
-new DashboardWidget().mount(app, {title: "Testowy widget", refreshInterval: 1000})
-
+new DigitalClockWidget().mount(app, {title: "Testowy widget", refreshInterval: 1000})
 }
 
-// area 51
-
-
+/// area 51
+// Roboczy przycisk do dodawania widgetu
 const input1 = document.createElement("input");
 input1.type = "button";
 input1.value = "KLIKNIJ MNIE (ADD_TEST)"
+let counter = 1;
 if(app){
     input1.addEventListener("click", () => {
-        const newWidget = new DashboardWidget().mount(app, {title: "Testowy widget", refreshInterval: 1000, type: widgetType.whetherWidget})
-    }
-)}
+        const clockWidget = new DigitalClockWidget();
+        clockWidget.mount(app, {title: "Testowy widget", refreshInterval: 1000});
+        counter+= 1;
+        clockWidget.setConfig({title: "TESTTTT ZMIANY", refreshInterval: (1000 * counter+1)});
+        console.log(clockWidget.getConfig());
+
+    })
+}
 
 app?.appendChild(input1);
 
 // TO DO:
 // Widgety:
-// DigitalClockWidget
+// DigitalClockWidget (dokończyć)
 // WhetherWidget
 // NewsWidget
 // Quote Widget
