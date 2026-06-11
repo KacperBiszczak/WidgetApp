@@ -1,9 +1,10 @@
-import { DashboardWidget } from "../dashboardWidgets/DashboardWidget";
+// import { DashboardWidget } from "../dashboardWidgets/DashboardWidget";
+import type { IDashboardWidgetConfig } from "../dashboardWidgets/IDashboardWidgetConfig";
 
 export interface IWidgetStorageProvider {
-  loadWidgets: () => Promise<DashboardWidget[]>;
-  updateWidget: (widget: DashboardWidget) => Promise<DashboardWidget>;
-  createWidget: (widget: DashboardWidget) => Promise<DashboardWidget>;
-  saveWidgets: (widget: DashboardWidget[]) => Promise<DashboardWidget[]>;
+  loadWidgets: () => Promise<IDashboardWidgetConfig[]>;
+  updateWidget: (widget: IDashboardWidgetConfig) => Promise<IDashboardWidgetConfig>;
+  createWidget: (widget: IDashboardWidgetConfig) => Promise<IDashboardWidgetConfig>;
+  saveWidgets: (widget: IDashboardWidgetConfig[]) => Promise<IDashboardWidgetConfig[]>;
   deleteWidget: (id: string) => Promise<void>;
 }

@@ -2,15 +2,12 @@ import type { IDashboardWidgetConfig } from "./IDashboardWidgetConfig";
 import type { IDashboardWidget } from "./IDashboardWidget";
 
 export abstract class DashboardWidget implements IDashboardWidget<IDashboardWidgetConfig> {
-    private static storedWidgets: IDashboardWidgetConfig[] = [];
     
     protected widgetEl: HTMLElement | undefined;
     protected target: HTMLElement | null = null;
     protected config: IDashboardWidgetConfig;
-    protected id: string;
 
     constructor(initialConfig?: IDashboardWidgetConfig) {
-        this.id = Math.floor(Math.random() * Date.now()).toString(16);
         this.config = initialConfig || {} as IDashboardWidgetConfig;
     }
 
@@ -20,42 +17,41 @@ export abstract class DashboardWidget implements IDashboardWidget<IDashboardWidg
 
         this.widgetEl = document.createElement("div");
         this.widgetEl.classList.add("widget");
-        this.widgetEl.id = this.id;
 
         target.appendChild(this.widgetEl);
-
-        DashboardWidget.storedWidgets.push(this.config);
+        
+        await this.render();
 
         // Usuwanie widgetu
-        this.widgetEl.addEventListener("click", () => {
-            this.unmount();
+        const deleteButton = document.createElement("span");
+        deleteButton.innerText = "❌";
+        deleteButton.classList.add("widgetDeleteButton");
+
+        deleteButton.addEventListener("click", (e) => {
+            e.stopPropagation();
+
+            this.widgetEl?.dispatchEvent(
+                new CustomEvent("deleteWidget", {
+                    bubbles: true,
+                    detail: { id: this.getId() }
+                })
+            );
         });
 
-        await this.render();
+        this.widgetEl.appendChild(deleteButton);
     };
 
     protected abstract render(): Promise<void> | void;
 
 
     async unmount(): Promise<void> {
-        console.log(`Usuwanie widgetu o ID: ${this.id}...`);
-
         if (this.widgetEl) {
             this.widgetEl.remove();
         }
 
-        console.log(DashboardWidget.getStoredWidgets())
         this.widgetEl = undefined;
         this.target = null;
     };
-
-    static getStoredWidgets(): IDashboardWidgetConfig[] {
-        return DashboardWidget.storedWidgets;
-    }
-
-    static setStoredWidgets(widgets:IDashboardWidgetConfig[]): void {
-        DashboardWidget.storedWidgets = widgets ? widgets : [] ;
-    }
 
     invalidate = async (): Promise<void> => {
         if (this.target) {
@@ -63,6 +59,10 @@ export abstract class DashboardWidget implements IDashboardWidget<IDashboardWidg
             this.onConfigUpdated(this.config);
         }
     };
+
+    public getId(): String {
+        return this.config.id;
+    }
 
     public setConfig = (config: Partial<IDashboardWidgetConfig>): void => {
         this.config = {

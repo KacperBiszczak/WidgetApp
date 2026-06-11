@@ -40,7 +40,8 @@ body{
 
 .widget{
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: space-around;
   align-items: center;
   border: 1px var(--darkTertiary) solid;
   border-radius: 1rem;
@@ -49,4 +50,8 @@ body{
   margin: .5rem;
   padding: 1rem;
   box-shadow: #000 1px 1px 6px;
+}
+
+.widgetDeleteButton{
+  cursor: pointer;
 }

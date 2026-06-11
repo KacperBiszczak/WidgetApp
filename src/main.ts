@@ -1,47 +1,29 @@
-import { DashboardWidget } from './modules/dashboardWidgets/DashboardWidget';
-import type { IDashboardWidgetConfig } from './modules/dashboardWidgets/IDashboardWidgetConfig';
-import { WidgetType } from './modules/dashboardWidgets/IDashboardWidgetConfig';
-import { DigitalClockWidget } from './modules/dashboardWidgets/DigitalClockWidget';
-import './style.css'
-import { Dashboard } from './modules/dashboardWidgets/Dashboard';
+import { Dashboard } from "./modules/dashboardWidgets/Dashboard";
+import { WidgetType } from "./modules/dashboardWidgets/IDashboardWidgetConfig";
+import { LocalStorageProvider } from "./modules/stores/localStorageProvider";
+import "./style.css";
 
-const app = document.querySelector<HTMLDivElement>('#app');
-const dashboard = new Dashboard();
-dashboard.mount(app!);
+const app = document.querySelector<HTMLDivElement>("#app");
 
-// Roboczy przycisk do dodawania widgetu
-/// area 51 (TESTY :D)
+if (app) {
+    const storage = new LocalStorageProvider();
+    const dashboard = new Dashboard(storage);
 
-const input1 = document.createElement("input");
-app?.appendChild(input1)
-input1.type = "button";
-input1.value = "KLIKNIJ MNIE (ADD_TEST)"
-// let counter = 1;
-if(app){
-    input1.addEventListener("click", () => {
-        // Dodawanie widgetu TEST
-        const config = {title: "Zegar", refreshInterval: 1000, type: WidgetType.DigitalClock}
-        dashboard.createWidget(config);
+    dashboard.mount(app);
 
-        console.log(DashboardWidget.getStoredWidgets());
-    })
-}
+    const addButton = document.createElement("input");
+    addButton.type = "button";
+    addButton.value = "Dodaj zegar";
 
-const input2 = document.createElement("input");
-app?.appendChild(input2)
-input2.type = "button";
-input2.value = "KLIKNIJ MNIE (STORAGEADDTEST)"
-// let counter = 1;
-if(app){
-    input2.addEventListener("click", () => {
-        // Dodawanie widgetu TEST
-        const widgets = DashboardWidget.getStoredWidgets();
-        // dashboard.createWidget(config);
-        widgets.forEach(widgetC => {
-            dashboard.createWidget(widgetC);
-        })
-        console.log(widgets);
-    })
+    addButton.addEventListener("click", () => {
+        dashboard.createWidget({
+            title: "Zegar",
+            refreshInterval: 1000,
+            type: WidgetType.DigitalClock,
+        });
+    });
+
+    app.appendChild(addButton);
 }
 ///
 

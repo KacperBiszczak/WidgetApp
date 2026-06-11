@@ -1,45 +1,95 @@
-import { DashboardWidget } from "./DashboardWidget";
+import type { IWidgetStorageProvider } from "../stores/IWidgetStorageProvider";
+import type { IDashboardWidgetConfig } from "./IDashboardWidgetConfig";
+import { WidgetType } from "./IDashboardWidgetConfig";
 import { DigitalClockWidget } from "./DigitalClockWidget";
-import { WidgetType, type IDashboardWidgetConfig } from "./IDashboardWidgetConfig"
+import { DashboardWidget } from "./DashboardWidget";
 
 export class Dashboard {
     protected dashboardEl: HTMLElement = document.createElement("div");
-    protected target: HTMLElement | null = null;
-    // protected storedWidgets: DashboardWidget[] = [];
-    
-    mount = (target: HTMLElement) => {
+    private widgets: DashboardWidget[] = [];
+    private storageProvider: IWidgetStorageProvider;
+
+    constructor(storageProvider: IWidgetStorageProvider) {
+        this.storageProvider = storageProvider;
+    }
+
+    mount = async (target: HTMLElement) => {
         this.dashboardEl = document.createElement("div");
         this.dashboardEl.classList.add("widgetContainer");
 
+        // Nasłuchiwanie eventu z dashboardWidget
+        this.dashboardEl.addEventListener("deleteWidget", async (event: Event) => {
+            const customEvent = event as CustomEvent;
+
+            await this.deleteWidget(customEvent.detail.id);
+        });
+
         target.appendChild(this.dashboardEl);
-    }
-    
-    createWidget = (initialConfig: IDashboardWidgetConfig) => {
-        let widget: DashboardWidget | null;
-        
-        switch(initialConfig.type){
+
+        const savedWidgets = await this.storageProvider.loadWidgets();
+
+        savedWidgets.forEach((config) => {
+            this.renderWidget(config);
+        });
+    };
+
+    createWidget = async (config: Omit<IDashboardWidgetConfig, "id">) => {
+        const widgetConfig: IDashboardWidgetConfig = {
+            ...config,
+            id: crypto.randomUUID(),
+        };
+
+        await this.storageProvider.createWidget(widgetConfig);
+        this.renderWidget(widgetConfig);
+    };
+
+    private renderWidget = (config: IDashboardWidgetConfig) => {
+        let widget: DashboardWidget;
+
+        switch (config.type) {
             case WidgetType.DigitalClock:
-                widget = new DigitalClockWidget(initialConfig);
-                widget.mount(this.dashboardEl, initialConfig);
+                widget = new DigitalClockWidget(config);
                 break;
 
-            case WidgetType.News:
-                // widget = new NewsWidget(initialConfig);
-                break;
-
-                // ... finish
-            
-            default: 
-                throw new Error("Zły typ widgetu.")
-                break;
+            default:
+                throw new Error("Zły typ widgetu.");
         }
+
+        widget.mount(this.dashboardEl, config);
+        this.widgets.push(widget);
+    };
+
+    deleteWidget = async (id: string) => {
+
+        const widget = this.widgets.find(
+            w => w.getId() === id
+        );
+
+        if (!widget) {
+            return;
+        }
+
+        await widget.unmount();
+
+        this.widgets = this.widgets.filter(
+            w => w.getId() !== id
+        );
+
+        await this.storageProvider.deleteWidget(id);
+
+        console.log(`Usunięto widget ${id}`);
     }
 
-    deleteWidget = (ID: String) => {
-        return ID;
-    }
+    updateWidget = async (id: string, config: Partial<IDashboardWidgetConfig>) => {
+        const widget = this.widgets.find((w) => w.getConfig().id === id);
+        if (!widget) return;
 
-    updateWidget = (ID: String, config: Partial<IDashboardWidgetConfig>) => {
-        return {ID, config};
-    }
+        const updatedConfig = {
+            ...widget.getConfig(),
+            ...config,
+        };
+
+        widget.setConfig(updatedConfig);
+        await this.storageProvider.updateWidget(updatedConfig);
+    };
 }
