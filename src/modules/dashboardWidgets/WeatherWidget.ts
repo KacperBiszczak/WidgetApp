@@ -13,19 +13,28 @@ export class WeatherWidget extends DashboardWidget {
 
         this.widgetEl.innerHTML = "";
 
-        const input = document.createElement("input");
-        input.type = "text";
-        input.placeholder = "Miasto";
-        input.value = this.config.city ?? "Warszawa";
+        const settingsButton = document.createElement("button");
+        settingsButton.textContent = "⚙️";
 
-        const button = document.createElement("button");
-        button.textContent = "Zmień";
+        const settingsContainer = document.createElement("div");
+        settingsContainer.classList.add("hidden");
 
-        this.weatherEl = document.createElement("div");
-        this.weatherEl.classList.add("weatherWidget")
+        const cityInput = document.createElement("input");
+        cityInput.type = "text";
+        cityInput.placeholder = "Miasto";
+        cityInput.value = this.config.city ?? "Warszawa";
 
-        button.addEventListener("click", () => {
-            const city = input.value.trim();
+        const saveButton = document.createElement("button");
+        saveButton.textContent = "Zmień";
+
+        settingsContainer.append(cityInput, saveButton);
+
+        settingsButton.addEventListener("click", () => {
+            settingsContainer.classList.toggle("hidden");
+        });
+
+        saveButton.addEventListener("click", () => {
+            const city = cityInput.value.trim();
 
             if (!city) return;
 
@@ -34,9 +43,17 @@ export class WeatherWidget extends DashboardWidget {
             });
 
             this.updateWeather();
+
+            settingsContainer.classList.add("hidden");
         });
 
-        this.widgetEl.append(input, button, this.weatherEl);
+        this.weatherEl = document.createElement("div");
+
+        this.widgetEl.append(
+            settingsButton,
+            settingsContainer,
+            this.weatherEl
+        );
 
         this.updateWeather();
     };
@@ -46,12 +63,12 @@ export class WeatherWidget extends DashboardWidget {
 
         const city = this.config.city ?? "Warszawa";
 
-        const mockWeather = this.getMockWeather(city);
+        const weather = this.getMockWeather(city);
 
         this.weatherEl.innerHTML = `
-            <p><strong>${mockWeather.city}</strong></p>
-            <p>${mockWeather.temperature}°C</p>
-            <p>${mockWeather.description}</p>
+            <h2>${weather.city}</h2>
+            <p>${weather.description}</p>
+            <h3>${weather.temperature}°C</h3>
         `;
     };
 
