@@ -17,11 +17,17 @@ export class Dashboard {
         this.dashboardEl = document.createElement("div");
         this.dashboardEl.classList.add("widgetContainer");
 
-        // Nasłuchiwanie eventu z dashboardWidget
+        // Nasłuchiwanie eventów z dashboardWidget
         this.dashboardEl.addEventListener("deleteWidget", async (event: Event) => {
             const customEvent = event as CustomEvent;
 
             await this.deleteWidget(customEvent.detail.id);
+        });
+
+        this.dashboardEl.addEventListener("configUpdated", async (event: Event) => {
+            const customEvent = event as CustomEvent<IDashboardWidgetConfig>;
+
+            await this.storageProvider.updateWidget(customEvent.detail);
         });
 
         target.appendChild(this.dashboardEl);

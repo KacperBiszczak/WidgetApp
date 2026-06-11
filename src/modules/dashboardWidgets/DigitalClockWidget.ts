@@ -30,12 +30,13 @@ export class DigitalClockWidget extends DashboardWidget {
 
         select.addEventListener("change", () => {
             this.setConfig({
-                clockFormat: select.value as "HH:MM:SS" | "HH:MM"
+                clockFormat: select.value as ClockFormat
             });       
             this.updateTimeDisplay();
         });
 
         this.digitalClockEl = document.createElement("div");
+        this.digitalClockEl.classList.add("clockWidget");
         
         this.widgetEl.append(select, this.digitalClockEl);
 

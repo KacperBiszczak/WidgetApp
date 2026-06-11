@@ -55,3 +55,7 @@ body{
 .widgetDeleteButton{
   cursor: pointer;
 }
+
+.clockWidget{
+  font-size: 2rem;
+}
