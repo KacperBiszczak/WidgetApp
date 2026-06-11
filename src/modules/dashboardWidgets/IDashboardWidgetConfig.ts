@@ -20,4 +20,5 @@ export interface IDashboardWidgetConfig {
 
     // opcjonalne potrzebne parametry
     clockFormat?: ClockFormat;
+    city? :string;
 }

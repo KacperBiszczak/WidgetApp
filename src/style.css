@@ -46,10 +46,11 @@ body{
   border: 1px var(--darkTertiary) solid;
   border-radius: 1rem;
   width: 10rem;
-  height: 10rem;
+  height: 12rem;
   margin: .5rem;
   padding: 1rem;
   box-shadow: #000 1px 1px 6px;
+  text-align: center;
 }
 
 .widgetDeleteButton{
@@ -59,3 +60,7 @@ body{
 .clockWidget{
   font-size: 2rem;
 }
+/* 
+.weatherWidget{
+  text-align: center;
+} */

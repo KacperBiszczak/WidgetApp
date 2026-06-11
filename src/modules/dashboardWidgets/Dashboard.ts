@@ -3,6 +3,7 @@ import type { IDashboardWidgetConfig } from "./IDashboardWidgetConfig";
 import { WidgetType } from "./IDashboardWidgetConfig";
 import { DigitalClockWidget } from "./DigitalClockWidget";
 import { DashboardWidget } from "./DashboardWidget";
+import { WeatherWidget } from "./WeatherWidget";
 
 export class Dashboard {
     protected dashboardEl: HTMLElement = document.createElement("div");
@@ -55,6 +56,10 @@ export class Dashboard {
         switch (config.type) {
             case WidgetType.DigitalClock:
                 widget = new DigitalClockWidget(config);
+                break;
+
+            case WidgetType.Weather:
+                widget = new WeatherWidget(config);
                 break;
 
             default:

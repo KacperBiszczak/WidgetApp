@@ -24,6 +24,21 @@ if (app) {
     });
 
     app.appendChild(addButton);
+
+    const addWeatherButton = document.createElement("input");
+    addWeatherButton.type = "button";
+    addWeatherButton.value = "Dodaj pogodę";
+
+    addWeatherButton.addEventListener("click", () => {
+        dashboard.createWidget({
+            title: "Pogoda",
+            refreshInterval: 1000,
+            type: WidgetType.Weather,
+            city: "Warszawa",
+        });
+    });
+
+    app.appendChild(addWeatherButton);
 }
 ///
 
