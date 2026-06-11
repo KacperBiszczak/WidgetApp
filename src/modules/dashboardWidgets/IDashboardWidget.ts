@@ -1,4 +1,4 @@
-export interface DashboardWidgetInterface<T> {
+export interface IDashboardWidget<T> {
     mount: (target: HTMLElement, initialConfig: T) => Promise<void>;
     unmount: () => Promise<void>;
     invalidate:() => Promise<void>;

@@ -1,4 +1,4 @@
-import type { DashboardWidgetConfig } from "./DashboardWidgetConfigInterface";
+import type { IDashboardWidgetConfig } from "./IDashboardWidgetConfig";
 import { DashboardWidget } from "./DashboardWidget";
 
 export class DigitalClockWidget extends DashboardWidget {
@@ -6,7 +6,7 @@ export class DigitalClockWidget extends DashboardWidget {
     
     #digitalClockEl: HTMLElement | undefined;
     
-    constructor(initialConfig?: DashboardWidgetConfig) {
+    constructor(initialConfig?: IDashboardWidgetConfig) {
         super(initialConfig);
     }
     

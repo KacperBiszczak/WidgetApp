@@ -1,34 +1,33 @@
-import type { DashboardWidgetConfig } from "./DashboardWidgetConfigInterface";
-import type { DashboardWidgetInterface } from "./DashboardWidgetInterface";
+import type { IDashboardWidgetConfig } from "./IDashboardWidgetConfig";
+import type { IDashboardWidget } from "./IDashboardWidget";
 
-export abstract class DashboardWidget implements DashboardWidgetInterface<DashboardWidgetConfig> {
-    protected rootEl: HTMLElement | undefined;
+export abstract class DashboardWidget implements IDashboardWidget<IDashboardWidgetConfig> {
+    private static storedWidgets: IDashboardWidgetConfig[] = [];
+    
     protected widgetEl: HTMLElement | undefined;
     protected target: HTMLElement | null = null;
-    protected config: DashboardWidgetConfig;
+    protected config: IDashboardWidgetConfig;
     protected id: string;
 
-    constructor(initialConfig?: DashboardWidgetConfig) {
+    constructor(initialConfig?: IDashboardWidgetConfig) {
         this.id = Math.floor(Math.random() * Date.now()).toString(16);
-        this.config = initialConfig || {} as DashboardWidgetConfig;
+        this.config = initialConfig || {} as IDashboardWidgetConfig;
     }
 
-    mount = async (target: HTMLElement, initialConfig: DashboardWidgetConfig): Promise<void> => {
+    mount = async (target: HTMLElement, initialConfig: IDashboardWidgetConfig): Promise<void> => {
         this.target = target;
         this.config = initialConfig;
 
-        this.rootEl = document.createElement("div");
-        this.rootEl.classList.add("widgetContainer");
-
-        this.widgetEl = document.createElement("span");
+        this.widgetEl = document.createElement("div");
         this.widgetEl.classList.add("widget");
         this.widgetEl.id = this.id;
 
-        this.rootEl.appendChild(this.widgetEl);
-        target.appendChild(this.rootEl);
+        target.appendChild(this.widgetEl);
+
+        DashboardWidget.storedWidgets.push(this.config);
 
         // Usuwanie widgetu
-        this.rootEl.addEventListener("click", () => {
+        this.widgetEl.addEventListener("click", () => {
             this.unmount();
         });
 
@@ -37,17 +36,26 @@ export abstract class DashboardWidget implements DashboardWidgetInterface<Dashbo
 
     protected abstract render(): Promise<void> | void;
 
+
     async unmount(): Promise<void> {
         console.log(`Usuwanie widgetu o ID: ${this.id}...`);
 
-        if (this.rootEl) {
-            this.rootEl.remove();
+        if (this.widgetEl) {
+            this.widgetEl.remove();
         }
 
-        this.rootEl = undefined;
+        console.log(DashboardWidget.getStoredWidgets())
         this.widgetEl = undefined;
         this.target = null;
     };
+
+    static getStoredWidgets(): IDashboardWidgetConfig[] {
+        return DashboardWidget.storedWidgets;
+    }
+
+    static setStoredWidgets(widgets:IDashboardWidgetConfig[]): void {
+        DashboardWidget.storedWidgets = widgets ? widgets : [] ;
+    }
 
     invalidate = async (): Promise<void> => {
         if (this.target) {
@@ -56,7 +64,7 @@ export abstract class DashboardWidget implements DashboardWidgetInterface<Dashbo
         }
     };
 
-    public setConfig = (config: Partial<DashboardWidgetConfig>): void => {
+    public setConfig = (config: Partial<IDashboardWidgetConfig>): void => {
         this.config = {
             ...this.config,
             ...config
@@ -65,11 +73,12 @@ export abstract class DashboardWidget implements DashboardWidgetInterface<Dashbo
         this.onConfigUpdated(this.config);
     };
 
-    public getConfig = (): DashboardWidgetConfig => {
+    public getConfig(): IDashboardWidgetConfig{
+        console.log(this.config)
         return this.config;
     };
 
-    onConfigUpdated = (config: DashboardWidgetConfig): void => {
+    onConfigUpdated = (config: IDashboardWidgetConfig): void => {
         this.config = config;
 
         if (this.target) {
