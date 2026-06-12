@@ -1,8 +1,8 @@
 import { Dashboard } from "./modules/dashboardWidgets/Dashboard";
 import { WidgetType } from "./modules/dashboardWidgets/IDashboardWidgetConfig";
-import { StorageProviderSelector } from "./modules/stores/StorageProviderSelector"
-import { StorageProviderSettings } from "./modules/stores/StorageProviderSettings";
-import { StorageProviderFactory } from "./modules/stores/StorageProviderFactory";
+import { StorageProviderSelector } from "./modules/stores/storageProvidersFactories/StorageProviderSelector"
+import { StorageProviderSettings } from "./modules/stores/storageProvidersFactories/StorageProviderSettings";
+import { StorageProviderFactory } from "./modules/stores/storageProvidersFactories/StorageProviderFactory";
 import "./style.css";
 
 const app = document.querySelector<HTMLDivElement>("#app");

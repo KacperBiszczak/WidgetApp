@@ -40,10 +40,11 @@ export class Dashboard {
         });
     };
 
-    createWidget = async (config: Omit<IDashboardWidgetConfig, "id">) => {
+    createWidget = async (config: Omit<IDashboardWidgetConfig, "id" | "order">) => {
         const widgetConfig: IDashboardWidgetConfig = {
             ...config,
             id: crypto.randomUUID(),
+            order: Date.now(),
         };
 
         await this.storageProvider.createWidget(widgetConfig);

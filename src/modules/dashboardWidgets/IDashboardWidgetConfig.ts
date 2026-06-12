@@ -18,6 +18,8 @@ export interface IDashboardWidgetConfig {
     refreshInterval: number;
     type: WidgetType;
 
+    order: number;
+
     // opcjonalne potrzebne parametry
     clockFormat?: ClockFormat;
     city? :string;

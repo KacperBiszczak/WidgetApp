@@ -1,7 +1,7 @@
-import type { IWidgetStorageProvider } from "./IWidgetStorageProvider";
-import { LocalStorageProvider } from "./LocalStorageProvider";
-import { IndexedDBStorageProvider } from "./IndexedDBStorageProvider";
-import { BackendStorageProvider } from "./BackendStorageProvider";
+import type { IWidgetStorageProvider } from "../IWidgetStorageProvider";
+import { LocalStorageProvider } from "../LocalStorageProvider";
+import { IndexedDBStorageProvider } from "../IndexedDBStorageProvider";
+import { BackendStorageProvider } from "../BackendStorageProvider";
 import { StorageProviderType, type StorageProviderType as StorageProviderTypeValue } from "./StorageProviderType";
 
 export class StorageProviderFactory {

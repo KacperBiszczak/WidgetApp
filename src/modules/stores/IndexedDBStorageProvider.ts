@@ -1,28 +1,31 @@
 import type { IDashboardWidgetConfig } from "../dashboardWidgets/IDashboardWidgetConfig";
 import type { IWidgetStorageProvider } from "./IWidgetStorageProvider";
+import { widgetDashboardDb } from "./WidgetDashboardDatabase";
 
 export class IndexedDBStorageProvider implements IWidgetStorageProvider {
     async loadWidgets(): Promise<IDashboardWidgetConfig[]> {
-        console.log("IndexedDB loadWidgets");
-        return [];
+        return await widgetDashboardDb.widgets
+        .orderBy("order")
+        .toArray();
     }
 
     async createWidget(widget: IDashboardWidgetConfig): Promise<IDashboardWidgetConfig> {
-        console.log("IndexedDB createWidget", widget);
+        await widgetDashboardDb.widgets.put(widget);
         return widget;
     }
 
     async updateWidget(widget: IDashboardWidgetConfig): Promise<IDashboardWidgetConfig> {
-        console.log("IndexedDB updateWidget", widget);
+        await widgetDashboardDb.widgets.put(widget);
         return widget;
     }
 
     async saveWidgets(widgets: IDashboardWidgetConfig[]): Promise<IDashboardWidgetConfig[]> {
-        console.log("IndexedDB saveWidgets", widgets);
+        await widgetDashboardDb.widgets.clear();
+        await widgetDashboardDb.widgets.bulkPut(widgets);
         return widgets;
     }
 
     async deleteWidget(id: string): Promise<void> {
-        console.log("IndexedDB deleteWidget", id);
+        await widgetDashboardDb.widgets.delete(id);
     }
 }
