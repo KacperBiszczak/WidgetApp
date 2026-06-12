@@ -1,28 +1,128 @@
+import { AuthProvider } from "../auth/AuthProvider";
 import type { IDashboardWidgetConfig } from "../dashboardWidgets/IDashboardWidgetConfig";
 import type { IWidgetStorageProvider } from "./IWidgetStorageProvider";
+import type { BackendDashboardConfigDto } from "./backend/BackendDtos";
 
 export class BackendStorageProvider implements IWidgetStorageProvider {
+    private readonly baseUrl = "https://wiboard-backend.runasp.net";
+    private readonly dashboardConfigEndpoint = "/api/dashboard/config";
+    private readonly authProvider = new AuthProvider();
+
     async loadWidgets(): Promise<IDashboardWidgetConfig[]> {
-        console.log("Backend loadWidgets");
-        return [];
+        const dto = await this.request<BackendDashboardConfigDto>(
+            this.dashboardConfigEndpoint
+        );
+
+        return this.mapFromBackendDto(dto);
     }
 
-    async createWidget(widget: IDashboardWidgetConfig): Promise<IDashboardWidgetConfig> {
-        console.log("Backend createWidget", widget);
-        return widget;
-    }
+    async saveWidgets(
+        widgets: IDashboardWidgetConfig[]
+    ): Promise<IDashboardWidgetConfig[]> {
+        const dto = this.mapToBackendDto(widgets);
 
-    async updateWidget(widget: IDashboardWidgetConfig): Promise<IDashboardWidgetConfig> {
-        console.log("Backend updateWidget", widget);
-        return widget;
-    }
+        await this.request<void>(
+            this.dashboardConfigEndpoint,
+            {
+                method: "PUT",
+                body: JSON.stringify(dto),
+            }
+        );
 
-    async saveWidgets(widgets: IDashboardWidgetConfig[]): Promise<IDashboardWidgetConfig[]> {
-        console.log("Backend saveWidgets", widgets);
         return widgets;
     }
 
+    async createWidget(
+        widget: IDashboardWidgetConfig
+    ): Promise<IDashboardWidgetConfig> {
+        const widgets = await this.loadWidgets();
+
+        widgets.push(widget);
+
+        await this.saveWidgets(widgets);
+
+        return widget;
+    }
+
+    async updateWidget(
+        widget: IDashboardWidgetConfig
+    ): Promise<IDashboardWidgetConfig> {
+        const widgets = await this.loadWidgets();
+
+        const updatedWidgets = widgets.map((currentWidget) =>
+            currentWidget.id === widget.id
+                ? widget
+                : currentWidget
+        );
+
+        await this.saveWidgets(updatedWidgets);
+
+        return widget;
+    }
+
     async deleteWidget(id: string): Promise<void> {
-        console.log("Backend deleteWidget", id);
+        const widgets = await this.loadWidgets();
+
+        const filteredWidgets = widgets.filter(
+            (widget) => widget.id !== id
+        );
+
+        await this.saveWidgets(filteredWidgets);
+    }
+
+    private mapToBackendDto(
+        widgets: IDashboardWidgetConfig[]
+    ): BackendDashboardConfigDto {
+        return {
+            version: 1,
+            widgets: widgets.map((widget) => ({
+                id: widget.id,
+                config: widget,
+            })),
+        };
+    }
+
+    private mapFromBackendDto(
+        dto: BackendDashboardConfigDto | null
+    ): IDashboardWidgetConfig[] {
+        if (!dto || !dto.widgets) {
+            return [];
+        }
+
+        return dto.widgets
+            .filter((widget) => widget.config !== null)
+            .map((widget) => widget.config);
+    }
+
+    private async request<T>(
+        endpoint: string,
+        options: RequestInit = {}
+    ): Promise<T> {
+        const token = this.authProvider.getToken();
+
+        if (!token) {
+            throw new Error("Brak tokena. Zaloguj się do backendu.");
+        }
+
+        const response = await fetch(`${this.baseUrl}${endpoint}`, {
+            ...options,
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+                ...options.headers,
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(
+                `Backend error: ${response.status} ${response.statusText}`
+            );
+        }
+
+        if (response.status === 204) {
+            return undefined as T;
+        }
+
+        return await response.json();
     }
 }

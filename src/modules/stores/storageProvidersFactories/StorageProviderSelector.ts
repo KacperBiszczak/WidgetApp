@@ -1,8 +1,10 @@
 import { StorageProviderType } from "./StorageProviderType";
 import { StorageProviderSettings } from "./StorageProviderSettings";
+import { BackendLoginForm } from "../../auth/BackendLoginForm";
 
 export class StorageProviderSelector {
     private selectEl: HTMLSelectElement;
+    private backendLoginForm = new BackendLoginForm();
 
     constructor() {
         this.selectEl = document.createElement("select");
@@ -26,5 +28,12 @@ export class StorageProviderSelector {
 
     public mount(target: HTMLElement): void {
         target.prepend(this.selectEl);
+        this.backendLoginForm.mount(target);
+
+        if (this.selectEl.value === StorageProviderType.Backend) {
+            this.backendLoginForm.show();
+        } else {
+            this.backendLoginForm.hide();
+        }
     }
 }
