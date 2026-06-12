@@ -1,14 +1,20 @@
 import { Dashboard } from "./modules/dashboardWidgets/Dashboard";
 import { WidgetType } from "./modules/dashboardWidgets/IDashboardWidgetConfig";
-import { LocalStorageProvider } from "./modules/stores/localStorageProvider";
+import { StorageProviderSelector } from "./modules/stores/StorageProviderSelector"
+import { StorageProviderSettings } from "./modules/stores/StorageProviderSettings";
+import { StorageProviderFactory } from "./modules/stores/StorageProviderFactory";
 import "./style.css";
 
 const app = document.querySelector<HTMLDivElement>("#app");
 
 if (app) {
-    const storage = new LocalStorageProvider();
-    const dashboard = new Dashboard(storage);
+    const providerSelector = new StorageProviderSelector();
+    providerSelector.mount(app);
 
+    const selectedProvider = StorageProviderSettings.getSelectedProvider();
+    const storageProvider = StorageProviderFactory.create(selectedProvider);
+
+    const dashboard = new Dashboard(storageProvider);
     dashboard.mount(app);
 
     const addButton = document.createElement("input");
@@ -48,10 +54,6 @@ if (app) {
 // WhetherWidget
 // NewsWidget
 // Quote Widget
-
-// Wychodząc do przodu kilka jak nie wszystkie potrzebują swojego parametru w configu, 
-// trzeba będzie dodać jako opcjonalne żeby ze storagami się nie mieszały... 🤔 
-// Interface'y dla poszczególnych configów
 
 // Storages:
 // LocalStorageProvider

@@ -19,6 +19,8 @@ body{
 
 #app{
   display: flex;
+  flex-direction: column;
+  gap: .5rem;
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
