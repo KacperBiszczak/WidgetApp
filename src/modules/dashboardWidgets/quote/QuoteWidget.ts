@@ -1,11 +1,11 @@
 import type {
     IDashboardWidgetConfig,
     QuoteProviderType,
-} from "./IDashboardWidgetConfig";
-import { DashboardWidget } from "./DashboardWidget";
-import type { IQuoteProvider } from "./quote/IQuoteProvider";
-import { QuotableQuoteProvider } from "./quote/QuotableQuoteProvider";
-import { CustomQuoteProvider } from "./quote/CustomQuoteProvider";
+} from "../IDashboardWidgetConfig";
+import { DashboardWidget } from "../DashboardWidget";
+import type { IQuoteProvider } from "./IQuoteProvider";
+import { QuotableQuoteProvider } from "./QuotableQuoteProvider";
+import { CustomQuoteProvider } from "./CustomQuoteProvider";
 
 export class QuoteWidget extends DashboardWidget {
     private quoteEl: HTMLElement | undefined;
@@ -23,16 +23,20 @@ export class QuoteWidget extends DashboardWidget {
     protected render = async (): Promise<void> => {
         if (!this.widgetEl) return;
 
-        this.widgetEl.innerHTML = "";
+        this.widgetEl.innerText = "";
+        this.widgetMenuEl?.querySelector(".widgetSettings")?.remove();
 
-        const title = document.createElement("h3");
-        title.textContent = this.config.title || "Cytat";
+        if(this.widgetEl && this.widgetHeaderEl){
+            this.widgetEl.appendChild(this.widgetHeaderEl);
+        }
 
-        const settingsButton = document.createElement("button");
-        settingsButton.textContent = "⚙️";
+        const settingsButton = document.createElement("div");
+        settingsButton.classList.add("widgetSettings");
+        settingsButton.innerHTML = '<span class="material-symbols-rounded">settings</span>';
+        this.widgetMenuEl?.appendChild(settingsButton);
 
         const settingsContainer = document.createElement("div");
-        settingsContainer.classList.add("hidden");
+        settingsContainer.classList.add("hidden", "settingsForm");
 
         const providerSelect = document.createElement("select");
 
@@ -58,6 +62,10 @@ export class QuoteWidget extends DashboardWidget {
         });
 
         // Formularz własnego cytatu
+        const formTitle = document.createElement("div");
+        formTitle.classList.add("settingsFormTitle");
+        formTitle.innerText = "Ustawienia";
+
         const customQuoteTextInput = document.createElement("input");
         customQuoteTextInput.type = "text";
         customQuoteTextInput.placeholder = "Treść cytatu";
@@ -68,6 +76,15 @@ export class QuoteWidget extends DashboardWidget {
 
         const addCustomQuoteButton = document.createElement("button");
         addCustomQuoteButton.textContent = "Dodaj własny cytat";
+
+        const closeButton = document.createElement("button");
+        closeButton.classList.add("settingsFormClose");
+        closeButton.textContent = "Zamknij";
+
+        const buttons = document.createElement("div");
+        buttons.classList.add("settingsFormButtons");
+        
+        buttons.append(addCustomQuoteButton, closeButton);
 
         addCustomQuoteButton.addEventListener("click", async () => {
             const text = customQuoteTextInput.value.trim();
@@ -89,7 +106,13 @@ export class QuoteWidget extends DashboardWidget {
             customQuoteTextInput.value = "";
             customQuoteAuthorInput.value = "";
 
+            settingsContainer.classList.toggle("hidden");
+
             await this.updateQuote();
+        });
+
+        closeButton.addEventListener("click", () => {
+            settingsContainer.classList.toggle("hidden");
         });
 
         const refreshButton = document.createElement("button");
@@ -105,14 +128,12 @@ export class QuoteWidget extends DashboardWidget {
             settingsContainer.classList.toggle("hidden");
         });
 
-        settingsContainer.append(providerSelect, customQuoteTextInput, customQuoteAuthorInput, addCustomQuoteButton);
+        settingsContainer.append(formTitle, providerSelect, customQuoteTextInput, customQuoteAuthorInput, buttons);
 
         this.quoteEl = document.createElement("div");
-        this.quoteEl.classList.add("quote-content");
+        this.quoteEl.classList.add("widgetQuote");
 
         this.widgetEl.append(
-            title,
-            settingsButton,
             settingsContainer,
             this.quoteEl,
             refreshButton
@@ -154,7 +175,7 @@ export class QuoteWidget extends DashboardWidget {
             text.textContent = `"${quote.quote}"`;
 
             const author = document.createElement("small");
-            author.textContent = `— ${quote.author}`;
+            author.textContent = `${quote.author}`;
 
             this.quoteEl.append(text, author);
         } catch {

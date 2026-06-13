@@ -1,11 +1,11 @@
 import type { IWidgetStorageProvider } from "../stores/IWidgetStorageProvider";
 import type { IDashboardWidgetConfig } from "./IDashboardWidgetConfig";
 import { WidgetType } from "./IDashboardWidgetConfig";
-import { DigitalClockWidget } from "./DigitalClockWidget";
+import { DigitalClockWidget } from "./clock/DigitalClockWidget";
 import { DashboardWidget } from "./DashboardWidget";
-import { WeatherWidget } from "./WeatherWidget";
-import { NewsWidget } from "./NewsWidget";
-import { QuoteWidget } from "./QuoteWidget";
+import { WeatherWidget } from "./weather/WeatherWidget";
+import { NewsWidget } from "./news/NewsWidget";
+import { QuoteWidget } from "./quote/QuoteWidget";
 
 export class Dashboard {
     protected dashboardEl: HTMLElement = document.createElement("div");

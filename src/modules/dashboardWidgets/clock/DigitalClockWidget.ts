@@ -1,5 +1,5 @@
-import type { IDashboardWidgetConfig, ClockFormat } from "./IDashboardWidgetConfig";
-import { DashboardWidget } from "./DashboardWidget";
+import type { IDashboardWidgetConfig, ClockFormat } from "../IDashboardWidgetConfig";
+import { DashboardWidget } from "../DashboardWidget";
 
 export class DigitalClockWidget extends DashboardWidget {
     private intervalId: ReturnType<typeof setInterval> | null = null;
@@ -12,36 +12,41 @@ export class DigitalClockWidget extends DashboardWidget {
     protected render = (): void => {
         if (!this.widgetEl) return;
 
-        this.widgetEl.innerHTML = "";
+        // this.widgetEl.innerHTML = "";
 
-        const title = document.createElement("h3");
-        title.textContent = this.config.title || "Zegar";
+        const select = document.createElement("div");
+        select.classList.add("widgetClockFormat")
 
-        const select = document.createElement("select");
+        // HH:MM:SS
+        const fullFormat = document.createElement("div");
+        fullFormat.innerText = "HH:MM:SS";
+        fullFormat.classList.add("widgetClockFormatOpt1")
 
-        const option1 = document.createElement("option");
-        option1.value = "HH:MM:SS";
-        option1.textContent = "HH:MM:SS";
+        // HH:MM
+        const halfFormat = document.createElement("div");
+        halfFormat.innerText = "HH:MM";
+        halfFormat.classList.add("widgetClockFormatOpt2")
 
-        const option2 = document.createElement("option");
-        option2.value = "HH:MM";
-        option2.textContent = "HH:MM";
+        select.append(fullFormat,halfFormat);
 
-        select.append(option1,option2);
-
-        select.value = this.config.clockFormat ?? "HH:MM:SS";
-
-        select.addEventListener("change", () => {
+        fullFormat.addEventListener("click", () => {
             this.setConfig({
-                clockFormat: select.value as ClockFormat
+                clockFormat: "HH:MM:SS" as ClockFormat
+            });       
+            this.updateTimeDisplay();
+        });
+
+        halfFormat.addEventListener("click", () => {
+            this.setConfig({
+                clockFormat: "HH:MM" as ClockFormat
             });       
             this.updateTimeDisplay();
         });
 
         this.digitalClockEl = document.createElement("div");
-        this.digitalClockEl.classList.add("clockWidget");
+        this.digitalClockEl.classList.add("widgetClock");
         
-        this.widgetEl.append(title, select, this.digitalClockEl);
+        this.widgetEl.append(this.digitalClockEl, select);
 
         this.updateTimeDisplay();
 

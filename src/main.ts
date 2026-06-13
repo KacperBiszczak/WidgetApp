@@ -3,26 +3,36 @@ import { WidgetType } from "./modules/dashboardWidgets/IDashboardWidgetConfig";
 import { StorageProviderSelector } from "./modules/stores/storageProvidersFactories/StorageProviderSelector"
 import { StorageProviderSettings } from "./modules/stores/storageProvidersFactories/StorageProviderSettings";
 import { StorageProviderFactory } from "./modules/stores/storageProvidersFactories/StorageProviderFactory";
-import "./style.css";
+// import "./style.css";
+import "./style.scss";
 
 const app = document.querySelector<HTMLDivElement>("#app");
 
 if (app) {
-    const providerSelector = new StorageProviderSelector();
-    providerSelector.mount(app);
 
+    // Nagłówek (menu)
+    const header = document.createElement("div");
+    header.classList.add("app-header");
+    app.appendChild(header);
+    
+    // Wybieranie storage providera
+    const providerSelector = new StorageProviderSelector();
+    providerSelector.mount(header);
+    
     const selectedProvider = StorageProviderSettings.getSelectedProvider();
     const storageProvider = StorageProviderFactory.create(selectedProvider);
 
-    const dashboard = new Dashboard(storageProvider);
-    dashboard.mount(app);
+    // Przyciski dodawania widgetów
+    const addButtons = document.createElement("div");
+    addButtons.classList.add("addButtonsContainer");
+    header.appendChild(addButtons);
 
     // Zegar
-    const addButton = document.createElement("input");
-    addButton.type = "button";
-    addButton.value = "Dodaj zegar";
+    const addClockButton = document.createElement("input");
+    addClockButton.type = "button";
+    addClockButton.value = "Dodaj zegar";
 
-    addButton.addEventListener("click", () => {
+    addClockButton.addEventListener("click", () => {
         dashboard.createWidget({
             title: "Zegar",
             refreshInterval: 1000,
@@ -30,7 +40,7 @@ if (app) {
         });
     });
 
-    app.appendChild(addButton);
+    addButtons.appendChild(addClockButton);
 
     // Pogoda
     const addWeatherButton = document.createElement("input");
@@ -46,7 +56,7 @@ if (app) {
         });
     });
 
-    app.appendChild(addWeatherButton);
+    addButtons.appendChild(addWeatherButton);
 
     // Wiadomości
     const addNewsButton = document.createElement("input");
@@ -62,7 +72,7 @@ if (app) {
         });
     });
 
-    app.appendChild(addNewsButton);
+    addButtons.appendChild(addNewsButton);
 
     // Cytaty
     const addQuoteButton = document.createElement("input");
@@ -78,8 +88,13 @@ if (app) {
         });
     });
 
-    app.appendChild(addQuoteButton);
+    addButtons.appendChild(addQuoteButton);
+
+    // Dashboard widgetów
+    const dashboard = new Dashboard(storageProvider);
+    dashboard.mount(app);
 }
+
 ///
 
 // TO DO:
