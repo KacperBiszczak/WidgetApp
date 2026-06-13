@@ -4,6 +4,8 @@ import { WidgetType } from "./IDashboardWidgetConfig";
 import { DigitalClockWidget } from "./DigitalClockWidget";
 import { DashboardWidget } from "./DashboardWidget";
 import { WeatherWidget } from "./WeatherWidget";
+import { NewsWidget } from "./NewsWidget";
+import { QuoteWidget } from "./QuoteWidget";
 
 export class Dashboard {
     protected dashboardEl: HTMLElement = document.createElement("div");
@@ -61,6 +63,14 @@ export class Dashboard {
 
             case WidgetType.Weather:
                 widget = new WeatherWidget(config);
+                break;
+
+            case WidgetType.News:
+                widget = new NewsWidget(config);
+                break;
+
+            case WidgetType.Quote:
+                widget = new QuoteWidget(config);
                 break;
 
             default:

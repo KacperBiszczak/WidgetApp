@@ -1,6 +1,6 @@
 import type { IDashboardWidgetConfig } from "./IDashboardWidgetConfig";
 import { DashboardWidget } from "./DashboardWidget";
-import { WeatherApiService } from "../../services/WeatherApiService";
+import { WeatherApiService } from "./weather/WeatherApiService";
 
 export class WeatherWidget extends DashboardWidget {
     private weatherEl: HTMLElement | undefined;
@@ -14,6 +14,9 @@ export class WeatherWidget extends DashboardWidget {
         if (!this.widgetEl) return;
 
         this.widgetEl.innerHTML = "";
+
+        const title = document.createElement("h3");
+        title.textContent = this.config.title || "Pogoda";
 
         const settingsButton = document.createElement("button");
         settingsButton.textContent = "⚙️";
@@ -52,6 +55,7 @@ export class WeatherWidget extends DashboardWidget {
         this.weatherEl = document.createElement("div");
 
         this.widgetEl.append(
+            title,
             settingsButton,
             settingsContainer,
             this.weatherEl
@@ -82,17 +86,14 @@ export class WeatherWidget extends DashboardWidget {
             const tempEl = document.createElement("p");
             tempEl.textContent = `Temperatura: ${weather.temperature}°C`;
 
-            // const feelsLikeEl = document.createElement("p");
-            // feelsLikeEl.textContent = `Odczuwalna: ${weather.feelsLike}°C`;
+            // const descEl = document.createElement("p");
+            // descEl.textContent = weather.description;
 
-            const descEl = document.createElement("p");
-            descEl.textContent = weather.description;
+            // const humidityEl = document.createElement("p");
+            // humidityEl.textContent = `Wilgotność: ${weather.humidity}%`;
 
-            const humidityEl = document.createElement("p");
-            humidityEl.textContent = `Wilgotność: ${weather.humidity}%`;
-
-            const windEl = document.createElement("p");
-            windEl.textContent = `Wiatr: ${weather.windKph} km/h`;
+            // const windEl = document.createElement("p");
+            // windEl.textContent = `Wiatr: ${weather.windKph} km/h`;
 
             this.weatherEl.append(
                 cityEl,

@@ -1,4 +1,8 @@
-// import type { DashboardWidgetInterface } from "./DashboardWidgetInterface";
+import type { NewsCategory } from "./news/NewsApiTypes";
+    
+export type ClockFormat = "HH:MM:SS" | "HH:MM";
+
+export type QuoteProviderType = "quotable" | "dummy";
 
 export const WidgetType = {
     DigitalClock: "clock",
@@ -7,7 +11,6 @@ export const WidgetType = {
     Quote: "quote",
 } as const;
 
-export type ClockFormat = "HH:MM:SS" | "HH:MM";
 
 export type WidgetType =
     (typeof WidgetType)[keyof typeof WidgetType];
@@ -23,4 +26,9 @@ export interface IDashboardWidgetConfig {
     // opcjonalne potrzebne parametry
     clockFormat?: ClockFormat;
     city? :string;
+
+    newsCategory?: NewsCategory;
+    newsCountry?: string;
+
+    quoteProvider?: string;
 }

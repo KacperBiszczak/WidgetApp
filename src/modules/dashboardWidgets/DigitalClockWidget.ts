@@ -14,6 +14,9 @@ export class DigitalClockWidget extends DashboardWidget {
 
         this.widgetEl.innerHTML = "";
 
+        const title = document.createElement("h3");
+        title.textContent = this.config.title || "Zegar";
+
         const select = document.createElement("select");
 
         const option1 = document.createElement("option");
@@ -38,7 +41,7 @@ export class DigitalClockWidget extends DashboardWidget {
         this.digitalClockEl = document.createElement("div");
         this.digitalClockEl.classList.add("clockWidget");
         
-        this.widgetEl.append(select, this.digitalClockEl);
+        this.widgetEl.append(title, select, this.digitalClockEl);
 
         this.updateTimeDisplay();
 

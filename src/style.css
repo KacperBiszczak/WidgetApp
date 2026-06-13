@@ -47,8 +47,8 @@ body{
   align-items: center;
   border: 1px var(--darkTertiary) solid;
   border-radius: 1rem;
-  width: 10rem;
-  height: 17rem;
+  width: 12rem;
+  height: 20rem;
   margin: .5rem;
   padding: 1rem;
   box-shadow: #000 1px 1px 6px;
@@ -86,4 +86,50 @@ body{
 .weather-settings {
     width: 100%;
     margin: .5rem 0;
+}
+
+.news-article {
+    margin: .5rem 0;
+    padding-bottom: .5rem;
+    border-bottom: 1px solid var(--darkTertiary);
+}
+
+.news-article a {
+    display: block;
+    color: inherit;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.news-article small {
+    opacity: .75;
+}
+
+.news-article p {
+    margin: .25rem 0;
+    font-size: .85rem;
+}
+
+.news-container {
+    width: 100%;
+    max-height: 300px;
+    overflow-y: auto;
+
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+}
+
+.quote-content {
+    padding: .5rem;
+    text-align: center;
+}
+
+.quote-content p {
+    font-style: italic;
+    margin: .5rem 0;
+}
+
+.quote-content small {
+    opacity: .75;
 }

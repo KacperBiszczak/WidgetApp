@@ -17,6 +17,7 @@ if (app) {
     const dashboard = new Dashboard(storageProvider);
     dashboard.mount(app);
 
+    // Zegar
     const addButton = document.createElement("input");
     addButton.type = "button";
     addButton.value = "Dodaj zegar";
@@ -31,6 +32,7 @@ if (app) {
 
     app.appendChild(addButton);
 
+    // Pogoda
     const addWeatherButton = document.createElement("input");
     addWeatherButton.type = "button";
     addWeatherButton.value = "Dodaj pogodę";
@@ -45,6 +47,38 @@ if (app) {
     });
 
     app.appendChild(addWeatherButton);
+
+    // Wiadomości
+    const addNewsButton = document.createElement("input");
+    addNewsButton.type = "button";
+    addNewsButton.value = "Dodaj wiadomości";
+
+    addNewsButton.addEventListener("click", () => {
+        dashboard.createWidget({
+            title: "Wiadomości",
+            refreshInterval: 1000,
+            type: WidgetType.News,
+            newsCategory: "general",
+        });
+    });
+
+    app.appendChild(addNewsButton);
+
+    // Cytaty
+    const addQuoteButton = document.createElement("input");
+    addQuoteButton.type = "button";
+    addQuoteButton.value = "Dodaj cytat";
+
+    addQuoteButton.addEventListener("click", () => {
+        dashboard.createWidget({
+            title: "Cytat",
+            refreshInterval: 1000,
+            type: WidgetType.Quote,
+            quoteProvider: "quotable",
+        });
+    });
+
+    app.appendChild(addQuoteButton);
 }
 ///
 
