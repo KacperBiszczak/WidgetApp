@@ -2,6 +2,7 @@ import { AuthProvider } from "../auth/AuthProvider";
 import type { IDashboardWidgetConfig } from "../dashboardWidgets/IDashboardWidgetConfig";
 import type { IWidgetStorageProvider } from "./IWidgetStorageProvider";
 import type { BackendDashboardConfigDto } from "./backend/BackendDtos";
+import Toast from "typescript-toastify";
 
 export class BackendStorageProvider implements IWidgetStorageProvider {
     private readonly baseUrl = "https://wiboard-backend.runasp.net";
@@ -101,7 +102,20 @@ export class BackendStorageProvider implements IWidgetStorageProvider {
         const token = this.authProvider.getToken();
 
         if (!token) {
-            throw new Error("Brak tokena. Zaloguj się do backendu.");
+            const toast = new Toast({
+                position: "top-right",
+                toastMsg: "Zaloguj się, by korzystać z aplikacji!",
+                autoCloseTime: 3000,
+                canClose: true,
+                showProgress: true,
+                pauseOnHover: true,
+                pauseOnFocusLoss: true,
+                type: "default",
+                theme: "dark"
+            });
+
+            toast.toastMsg;
+            throw new Error("Brak tokenu. Zaloguj się do backendu.");
         }
 
         const response = await fetch(`${this.baseUrl}${endpoint}`, {

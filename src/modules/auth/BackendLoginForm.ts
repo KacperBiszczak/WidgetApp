@@ -6,7 +6,7 @@ export class BackendLoginForm {
 
     constructor() {
         this.container = document.createElement("div");
-        this.container.classList.add("backend-login-form");
+        this.container.classList.add("backendLoginForm");
         this.render();
     }
 
