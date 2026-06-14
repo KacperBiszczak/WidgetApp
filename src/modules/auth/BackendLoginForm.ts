@@ -26,6 +26,7 @@ export class BackendLoginForm {
         this.container.innerHTML = "";
 
         if (this.authService.isAuthenticated()) {
+            
             const info = document.createElement("p");
             info.textContent = "Zalogowano do backendu";
 
@@ -41,13 +42,22 @@ export class BackendLoginForm {
             return;
         }
 
+        
         const loginInput = document.createElement("input");
         loginInput.type = "text";
         loginInput.placeholder = "Login";
+        
+        const loginDiv = document.createElement("div");
+        loginDiv.classList.add("backendLoginFormLogin");
+        loginDiv.appendChild(loginInput);
 
         const passwordInput = document.createElement("input");
         passwordInput.type = "password";
         passwordInput.placeholder = "Hasło";
+
+        const passwordDiv = document.createElement("div");
+        passwordDiv.classList.add("backendLoginFormPassword");
+        passwordDiv.appendChild(passwordInput);
 
         const loginButton = document.createElement("button");
         loginButton.textContent = "Zaloguj";
@@ -72,8 +82,8 @@ export class BackendLoginForm {
         });
 
         this.container.append(
-            loginInput,
-            passwordInput,
+            loginDiv,
+            passwordDiv,
             loginButton,
             message
         );

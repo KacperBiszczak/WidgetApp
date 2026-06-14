@@ -29,9 +29,8 @@ if (app) {
     header.appendChild(addButtons);
 
     // Zegar
-    const addClockButton = document.createElement("input");
-    addClockButton.type = "button";
-    addClockButton.value = "Dodaj zegar";
+    const addClockButton = document.createElement("div");
+    addClockButton.innerHTML = "<span class='material-symbols-rounded'>nest_clock_farsight_analog</span>";
 
     addClockButton.addEventListener("click", () => {
         dashboard.createWidget({
@@ -44,9 +43,8 @@ if (app) {
     addButtons.appendChild(addClockButton);
 
     // Pogoda
-    const addWeatherButton = document.createElement("input");
-    addWeatherButton.type = "button";
-    addWeatherButton.value = "Dodaj pogodę";
+    const addWeatherButton = document.createElement("div");
+    addWeatherButton.innerHTML = "<span class='material-symbols-rounded'>weather_hail</span>";
 
     addWeatherButton.addEventListener("click", () => {
         dashboard.createWidget({
@@ -60,9 +58,8 @@ if (app) {
     addButtons.appendChild(addWeatherButton);
 
     // Wiadomości
-    const addNewsButton = document.createElement("input");
-    addNewsButton.type = "button";
-    addNewsButton.value = "Dodaj wiadomości";
+    const addNewsButton = document.createElement("div");
+    addNewsButton.innerHTML = "<span class='material-symbols-rounded'>news</span>";;
 
     addNewsButton.addEventListener("click", () => {
         dashboard.createWidget({
@@ -76,9 +73,8 @@ if (app) {
     addButtons.appendChild(addNewsButton);
 
     // Cytaty
-    const addQuoteButton = document.createElement("input");
-    addQuoteButton.type = "button";
-    addQuoteButton.value = "Dodaj cytat";
+    const addQuoteButton = document.createElement("div");
+    addQuoteButton.innerHTML = "<span class='material-symbols-rounded'>format_quote</span>";;
 
     addQuoteButton.addEventListener("click", () => {
         dashboard.createWidget({
