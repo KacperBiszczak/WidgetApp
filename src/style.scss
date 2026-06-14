@@ -226,18 +226,18 @@ body{
 }
 
 .backendLoginForm{
-    position: absolute;
-    left: 50vw;
-    top: 50vh;
-    transform: translate(-50%, -50%);
+    // position: absolute;
+    // left: 50vw;
+    // top: 50vh;
+    // transform: translate(-50%, -50%);
 
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     justify-content: center;
-    gap: .4rem;
+    // gap: rem;
 
-    padding: 2rem;
+    padding: .5rem;
 
     border: var(--darkTertiary) 1px solid;
     border-radius: 1rem;
@@ -252,8 +252,12 @@ body{
         justify-content: center;
     }
 
-    button{
-        width: 95%;
+    .loggedInInfo{
+        margin: .5rem;
+    }
+
+    .logoutButton{
+        margin: .5rem;
     }
 }
 

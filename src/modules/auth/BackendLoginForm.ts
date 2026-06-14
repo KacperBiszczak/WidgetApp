@@ -1,4 +1,5 @@
 import { BackendAuthService } from "./BackendAuthService";
+import { renderToast } from "../toast/renderToast";
 
 export class BackendLoginForm {
     private authService = new BackendAuthService();
@@ -26,11 +27,13 @@ export class BackendLoginForm {
         this.container.innerHTML = "";
 
         if (this.authService.isAuthenticated()) {
-            
-            const info = document.createElement("p");
+
+            const info = document.createElement("div");
+            info.classList.add("loggedInInfo");
             info.textContent = "Zalogowano do backendu";
 
             const logoutButton = document.createElement("button");
+            logoutButton.classList.add("logoutButton");
             logoutButton.textContent = "Wyloguj";
 
             logoutButton.addEventListener("click", () => {
@@ -62,8 +65,6 @@ export class BackendLoginForm {
         const loginButton = document.createElement("button");
         loginButton.textContent = "Zaloguj";
 
-        const message = document.createElement("p");
-
         loginButton.addEventListener("click", async () => {
             try {
                 await this.authService.login(
@@ -71,13 +72,16 @@ export class BackendLoginForm {
                     passwordInput.value
                 );
 
-                message.textContent = "Zalogowano!";
+                renderToast("Zalogowano.")
+
                 this.render();
             } catch (error) {
-                message.textContent =
+                const message =
                     error instanceof Error
                         ? error.message
                         : "Błąd logowania.";
+
+                renderToast(message);
             }
         });
 
@@ -85,7 +89,6 @@ export class BackendLoginForm {
             loginDiv,
             passwordDiv,
             loginButton,
-            message
         );
     }
 }
