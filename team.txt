@@ -1,3 +1,8 @@
-Kacper Biszczak nr. 15236 - 
-Kamil Tylczak nr. - 
-Milena Lebek nr. - 
+Kacper Biszczak nr. 15236
+Dashboard, DashboardWidget, DashboardWidgetConfig, BackendProvider, implementacja wyboru StorageProvider, autentykacja, stylizacja, 
+
+Kamil Tylczak nr. 15188
+Implementacja WeatherWidget, NewsWidget, LocalStorageProvider
+
+Milena Lebek nr. 14548
+Implementacja DigitalClockWidget, QuoteWidget, IndexedDBProvider
